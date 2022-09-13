@@ -1,0 +1,17 @@
+<html>
+    <head>
+        <title>Read value from external page</title>
+    </head>
+    <body>
+        <p>The following value is fetched from an external page on 127.0.0.1 domain :</p>
+        <article/>
+        <script>
+            const myArticle = document.querySelector('article');
+            fetch('http://127.0.0.1/header/lab2-cookies/10_read_cookie_from_server_side.php')
+                .then((response) => response.text())
+                .then((text) => {
+                    myArticle.innerHTML = text;
+                });
+        </script>
+    </body>
+</html>

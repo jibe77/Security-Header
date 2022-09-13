@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Example 3 set cookie with domain attribute</title>
+  </head>
+  <body>
+    <script>
+        function setCookie(cname, cvalue, exdays) {
+            const d = new Date();
+            d.setTime(d.getTime() + (exdays*24*60*60*1000));
+            let expires = "expires="+ d.toUTCString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";domain=127.0.0.1;";
+        }
+        setCookie("username", "jb path", 1);
+    </script>
+    The cookie 'username' has been created with domain attribute on 127.0.0.1.
+  </body>
+</html>

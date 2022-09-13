@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Example 1 set cookie without secure attribute</title>
+  </head>
+  <body>
+    <script>
+        function setCookie(cname, cvalue, exdays) {
+            document.cookie = cname + "=" + cvalue + ";";
+        }
+        setCookie("username", "without expiration date", 1);
+    </script>
+    The cookie 'username' has been created without expiration date.
+  </body>
+</html>

@@ -81,6 +81,7 @@ La syntaxe est la suivante (la durée d'expiration est exprimée en secondes) :
 La durée d'expiration généralement conseillée est de 2 ans, donc la règle suivante doit être spécifié dans la réponse des appels HTTP :
 
      Strict-Transport-Security: max-age=63072000; includeSubDomains; preload;
+     
 
 Plus d'information sur le site de Mozilla : https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security
 
@@ -96,12 +97,64 @@ Un cookie avec l'attribut HttpOnly est inaccessible à l'API JavaScript Document
 
   Set-Cookie: id=a3fWa; Expires=Thu, 21 Oct 2021 07:28:00 GMT; Secure; HttpOnly
 
-TODO : exemple sur Secure
-TODO : exemple sur HttpOnly
+Lien HTTP de création du cookie sans secure : http://192.168.3.6/header/lab2-cookies/02_create_cookie_without_secure.html
+Lien pour l'affichage du contenu du cookie en HTTP : http://192.168.3.6/header/lab2-cookies/01_display_cookie_with_js.html
+Lien pour l'affichage du contenu du cookie en HTTPS : https://192.168.3.6/header/lab2-cookies/01_display_cookie_with_js.html
+
+On remarque que le cookie est lisible dans les deux cas.
+
+Lien HTTP de création du cookie avec secure : http://192.168.3.6/header/lab2-cookies/03_create_cookie_with_secure.html
+Lien pour l'affichage du contenu du cookie secure en HTTP : http://192.168.3.6/header/lab2-cookies/01_display_cookie_with_js.html
+Lien pour l'affichage du contenu du cookie secure en HTTPS : https://192.168.3.6/header/lab2-cookies/01_display_cookie_with_js.html
+
+On remarque que la création du cookie avec l'attribut Secure n'est pas possible depuis HTTP.
+
+Lien HTTP de création du cookie avec secure : https://192.168.3.6/header/lab2-cookies/03_create_cookie_with_secure.html
+Lien pour l'affichage du contenu du cookie secure en HTTP : http://192.168.3.6/header/lab2-cookies/01_display_cookie_with_js.html
+Lien pour l'affichage du contenu du cookie secure en HTTPS : https://192.168.3.6/header/lab2-cookies/01_display_cookie_with_js.html
+
+On remarque que le cookie est seulement lisible depuis HTTPS.
+
+Lien HTTP de création du cookie avec secure en localhost : http://localhost/header/lab2-cookies/02_create_cookie_with_secure.html
+Lien pour l'affichage du contenu du cookie secure en HTTP en localhost : http://localhost/header/lab2-cookies/01_display_cookie_with_js.html
+Lien pour l'affichage du contenu du cookie secure en HTTPS en localhost: https://localhost/header/lab2-cookies/01_display_cookie_with_js.html
+
+On remarque que l'attribut Secure n'est pas pris en compte en localhost (idem pour 127.0.0.1). Le cookie est créé et lu en HTTP et HTTPS.
+
+Dans ce deuxième exemple, l'application créé le même cookie mais avec l'attribut HttpOnly.
+
+Lien de création du cookie sans l'option HttpOnly : http://localhost/header/lab2-cookies/04_create_cookie_without_httponly.html
+Lien pour accéder au contenu du cookie : http://localhost/header/lab2-cookies/01_display_cookie_with_js.html
+
+Lien de création du cookie avec l'option HttpOnly : http://localhost/header/lab2-cookies/05_create_cookie_with_httponly.html
+Lien pour accéder au contenu du cookie : http://localhost/header/lab2-cookies/01_display_cookie_with_js.html
+
+On remarque que cela ne fonctionne pas car la création du cookie est fait via Javascript, et il est interdit de manipuler (et donc créer) un cookie HttpOnly via Javascript.
+
+Les attributs Domain et Path définissent la partie d'un cookie, afin que le navigateur sache sur quelles URL le cookie peut être envoyé.
 
 L'attribut Domain spécifie quels hôtes peuvent recevoir un cookie. S'il n'est pas spécifié, l'attribut utilise par défaut le même hôte qui a défini le cookie, à l'exclusion des sous-domaines. Si Domain est spécifié, les sous-domaines sont toujours inclus. Par conséquent, spécifier Domain est moins restrictif que de l'omettre.
 
-TODO : exemple sur Domain
+Lien pour créer un cookie avec le domaine 127.0.0.1 alors que la page est consultée depuis localhost : http://localhost/header/lab2-cookies/06_create_cookie_with_domain.html
+
+On remarque que le cookie n'est pas accepté : 
+
+Cookie “username” has been rejected for invalid domain.
+
+Lien pour créer le cookie depuis 127.0.0.1 : 
+
+http://127.0.0.1/header/lab2-cookies/06_create_cookie_with_domain.html
+
+On remarque que le message suivant est affiché dans Firefox : Cookie “username” does not have a proper “SameSite” attribute value. Soon, cookies without the “SameSite” attribute or with an invalid value will be treated as “Lax”. 
+
+Note: on remarque que le cookie est présent également depuis le niveau supérieur de la hiérarchie :
+
+http://127.0.0.1/header/lab2-cookies/
+
+Lien pour vérifier si le cookie est lisible depuis localhost : http://localhost/header/lab2-cookies/01_display_cookie_with_js.html
+Lien pour vérifier si le cookie est lisible depuis 127.0.0.1 : http://127.0.0.1/header/lab2-cookies/01_display_cookie_with_js.html
+
+Il est donc présent en 127.0.0.1 et pas en localhost.
 
 L'attribut Path indique un chemin d'URL qui doit exister dans l'URL demandée afin d'envoyer l'en-tête Cookie. Le caractère %x2F ("/") est considéré comme un séparateur de répertoire et les sous-répertoires correspondent également.
 
@@ -118,11 +171,52 @@ Mais ces chemins ne sont pas pris en compte :
     /docsets
     /fr/docs
 
+Lien pour créer un cookie avec le path /header : http://127.0.0.1/header/lab2-cookies/07_create_cookie_with_domain_and_path.html
+Lien pour lire le contenu du cookie : 
+http://127.0.0.1/header/lab2-cookies/01_display_cookie_with_js.html
+On voit que cela fonctionne.
+Si on modifie manuellement le path dans le cookie, on voit en rafraichissant la page qu'on ne peut plus accéder au cookie.
+
 L'attribut SameSite permet aux serveurs de spécifier si/quand les cookies sont envoyés avec des requêtes intersites (où Site est défini par le domaine enregistrable et le schéma : http ou https). Cela offre une certaine protection contre les attaques de falsification de requêtes intersites (CSRF). Il prend trois valeurs possibles : Strict, Lax et None.
 
   Set-Cookie: mykey=myvalue; SameSite=Strict
 
 Avec Strict, le cookie n'est envoyé qu'au site d'où il provient. Lax est similaire, sauf que les cookies sont envoyés lorsque l'utilisateur navigue sur le site d'origine du cookie. Par exemple, en suivant un lien depuis un site externe. Aucun spécifie que les cookies sont envoyés à la fois sur les requêtes d'origine et intersites, mais uniquement dans des contextes sécurisés (c'est-à-dire, si SameSite=None, l'attribut Secure doit également être défini). Si aucun attribut SameSite n'est défini, le cookie est traité comme Lax.
+
+Lien pour créer un cookie sans samesite : http://127.0.0.1/header/lab2-cookies/02_create_cookie_without_secure.html
+Le but est d'accéder à cette page effectuant un traitement côté serveur depuis un site situé sur un autre domaine : http://127.0.0.1/header/lab2-cookies/12_read_cookie_from_server_side_log.php
+Voir si le cookie sur 127.0.0.1 est présent dans les logs lors d'un appel depuis 127.0.0.1 : http://127.0.0.1/header/lab2-cookies/13_launch_csrf_from_post.html
+Voir si le cookie sur 127.0.0.1 est présent dans les logs lors d'un appel depuis 192.168.3.6 : http://192.168.3.6/header/lab2-cookies/13_launch_csrf_from_post.html
+
+On remarque qu'il n'y a pas de problème pour le service attaqué d'accéder au cookie. 
+
+Dans les exemples suivants, on peut voir que l'attribut SameSite bloque l'accès au cookie lorsque la page est appelée depuis un autre domaine :
+
+Lien pour créer un cookie avec samesite : http://127.0.0.1/header/lab2-cookies/09_create_cookie_with_samesite.html
+Le but est de récupérer le contenu de cette page depuis un site situé sur un autre domaine : http://127.0.0.1/header/lab2-cookies/12_read_cookie_from_server_side_log.php
+Voir si le cookie sur 127.0.0.1 est présent dans les logs lors d'un appel depuis 127.0.0.1 : http://127.0.0.1/header/lab2-cookies/13_launch_csrf_from_post.html
+Voir si le cookie sur 127.0.0.1 est présent dans les logs lors d'un appel depuis 192.168.3.6 : http://192.168.3.6/header/lab2-cookies/13_launch_csrf_from_post.html
+
+Attention, cet autre exemple ne fonctionne pas dans le cas d'un lien hypertext avec la méthode GET, dans ce cas il doit être conseillé de changer pour la méthode POST :
+
+Lien pour créer un cookie sans samesite : http://127.0.0.1/header/lab2-cookies/02_create_cookie_without_secure.html
+Lien pour lancer une attaque CSRF depuis 192.168.3.6, et voir si le cookie sur 127.0.0.1 est lisible : http://192.168.3.6/header/lab2-cookies/08_launch_csrf.html
+Lien pour créer un cookie avec samesite : http://127.0.0.1/header/lab2-cookies/09_create_cookie_with_samesite.html
+Lien pour lancer une attaque CSRF depuis 192.168.3.6, et voir si le cookie sur 127.0.0.1 est lisible : http://192.168.3.6/header/lab2-cookies/08_launch_csrf.html
+
+## Blocage des appels CORS
+
+Pour permettre les appels depuis d'autres domaines, via la fonction fetch de Javascript par exemple, le service doit indiquer dans son en-tête l'attribut 'Access-Control-Allow-Origin':
+
+   Access-Control-Allow-Origin: *
+   Access-Control-Allow-Origin: <origin>
+   Access-Control-Allow-Origin: null
+
+Dans les prochains exemples, l'appel ne fonctionne pas car le header CORS n'est pas présent donc le navigateur n'autorise pas la requête vers un autre domaine avec la méthode fetch :
+
+Lien pour créer un cookie sans samesite : http://127.0.0.1/header/lab2-cookies/02_create_cookie_without_secure.html
+Le but est de récupérer le contenu de cette page depuis un site situé sur un autre domaine : http://127.0.0.1/header/lab2-cookies/10_read_cookie_from_server_side.php
+voir si le cookie sur 127.0.0.1 est lisible depuis 127.0.0.1 : http://127.0.0.1/header/lab2-cookies/11_launch_csrf_from_post.html
 
 ## Gestion de la session
 
@@ -134,7 +228,15 @@ Voici un exemple :
 
   Cookie: user_id=5; remember_me=true
 
-TODO : exemple entre un cookie avec date et sans date.
+Création d'un cookie avec date d'expiration : http://127.0.0.1/header/lab2-cookies/14_create_cookie_with_expiration.html
+On ouvre cette page, on remarque que le cookie est accessible : http://127.0.0.1/header/lab2-cookies/01_display_cookie_with_js.html
+Après avoir fermé son navigateur, on ouvre la même page et le cookie est encore disponible : http://127.0.0.1/header/lab2-cookies/01_display_cookie_with_js.html
+
+Création d'un cookie sans date d'expiration : http://127.0.0.1/header/lab2-cookies/15_create_cookie_without_expiration.html
+On ouvre cette page, on remarque que le cookie est accessible : http://127.0.0.1/header/lab2-cookies/01_display_cookie_with_js.html
+Après avoir fermé son navigateur, on ouvre la même page et le cookie n'est plus disponible : http://127.0.0.1/header/lab2-cookies/01_display_cookie_with_js.html
+
+On remarque que le cookie n'est plus disponible suite au redémarrage du navigateur.
 
 ## Gestion du cache
 
@@ -148,6 +250,17 @@ Pour les fichiers de l'application qui ne seront pas modifiés, vous pouvez gén
 
 Lorsque l'utilisateur se déconnecte, la suppression du cache, des cookies et du storage est fait via une réponse HTTP contenant cet en-tête :
 
- Clear-Site-Storage: "cache", "cookies", "storage"
+ Clear-Site-Data: "cache", "cookies", "storage"
 
-TODO : exemple pour chacun.
+L'idéal est de spécifier cet en-tête à la fermeture de la session.
+
+Dans ce lien, on créé un cookie : http://127.0.0.1/header/lab2-cookies/02_create_cookie_without_secure.html
+Dans ce lien, on affiche le contenu du cookie : http://127.0.0.1/header/lab2-cookies/01_display_cookie_with_js.html
+Dans ce lien, on supprime le contenu gardé par le navigateur : http://127.0.0.1/header/lab2-cookies/16_clear_site_storage.html
+Dans ce lien, on affiche le contenu du cookie : http://127.0.0.1/header/lab2-cookies/01_display_cookie_with_js.html
+
+Pour information l'ajout de l'en-tête a été configuré dans Apache 2 :
+
+<FilesMatch "(16_clear_site_storage.html)$">
+    Header always set Clear-Site-Data "\"*\""
+</FilesMatch>
